@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'cep.dart';
 
-class CepDetails extends StatelessWidget {
+class DetailsScreen extends StatelessWidget {
   final Cep cep;
 
-  CepDetails({Key key, this.cep}) : super(key: key);
+  DetailsScreen({Key key, this.cep}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
