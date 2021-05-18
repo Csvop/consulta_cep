@@ -1,8 +1,10 @@
 import 'dart:convert';
+import 'package:consulta_cep/detailsScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'cep.dart';
+import 'detailsScreen.dart';
 
 class Home extends StatefulWidget {
   Home({Key key, this.title}) : super(key: key);
@@ -12,22 +14,37 @@ class Home extends StatefulWidget {
   _HomeState createState() => _HomeState();
 }
 
-Future<Cep> fetchAlbum() async {
-  final response =
-      await http.get(Uri.https('viacep.com.br', 'ws/91780050/json'));
+void fetchCep(context, String textCep) async {
+  try{
+    final response =
+      await http.get(Uri.https('viacep.com.br', 'ws/$textCep/json'));
 
-  if (response.statusCode == 200) {
-    // If the server did return a 200 OK response,
-    // then parse the JSON.
-    return Cep.fromJson(jsonDecode(response.body));
-  } else {
-    // If the server did not return a 200 OK response,
-    // then throw an exception.
-    throw Exception('Failed to load album');
+    if (response.statusCode == 200) {
+      // If the server did return a 200 OK response,
+      // then parse the JSON.
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => DetailsScreen(
+            Cep.fromJson(jsonDecode(response.body))
+          )
+        )
+      );
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw Exception('Failed to load album');
+    }
+  } catch(err) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text("CEP não encontrado!"), duration: Duration(seconds: 3))
+    );
   }
 }
 
 class _HomeState extends State<Home> {
+  TextEditingController textCep = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,7 +60,8 @@ class _HomeState extends State<Home> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 TextFormField(
-                    decoration: InputDecoration(
+                  controller: textCep,
+                  decoration: InputDecoration(
                   icon: Icon(Icons.location_history),
                   hintText: 'Insira o seu CEP...',
                   labelText: 'Seu CEP',
@@ -73,10 +91,7 @@ class _HomeState extends State<Home> {
                   ),
                   child: Text('Buscar'),
                   onPressed: () {
-
-                    // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    //   content: Text("Aqui"),
-                    // ));
+                    fetchCep(context, textCep.text);
                   },
                 ),
                 SizedBox(

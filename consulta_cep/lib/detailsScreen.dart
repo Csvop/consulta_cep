@@ -4,7 +4,7 @@ import 'cep.dart';
 class DetailsScreen extends StatelessWidget {
   final Cep cep;
 
-  DetailsScreen({Key key, this.cep}) : super(key: key);
+  DetailsScreen(this.cep);
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +36,7 @@ class DetailsScreen extends StatelessWidget {
                 ListTile(
                     leading: Icon(Icons.location_history),
                     title: Text(
-                        "{cep.logradouro} {cep.complemento}, Bairro {cep.bairro}\n{cep.localidade} - {cep.uf}"),
+                        "${cep.logradouro} ${cep.complemento}, Bairro ${cep.bairro}\n${cep.localidade} - ${cep.uf}"),
                     subtitle: Text(cep.logradouro,
                         style: TextStyle(color: Colors.grey[500]))),
                 ListTile(
